@@ -1,3 +1,3 @@
-module github.com/YanAmorelli/learnig-go
+module github.com/YanAmorelli/learning-go
 
 go 1.17
