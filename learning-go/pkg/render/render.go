@@ -47,7 +47,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	
 	myCache := map[string]*template.Template{}
 	
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
+	pages, err := filepath.Glob("./templates/*.page.go.tmpl")
 	if err != nil {
 		return myCache, err
 	}
@@ -60,13 +60,13 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return myCache, err
 		}
 		
-		matchLayout, err := filepath.Glob("./templates/*.layout.tmpl")
+		matchLayout, err := filepath.Glob("./templates/*.layout.go.tmpl")
 		if err != nil {
 			return myCache, err
 		}
 
 		if len(matchLayout) > 0 {
-			templateSet, err = templateSet.ParseGlob("./templates/*.layout.tmpl")
+			templateSet, err = templateSet.ParseGlob("./templates/*.layout.go.tmpl")
 			if err != nil {
 				return myCache, err
 			}
