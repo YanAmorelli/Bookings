@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"github.com/YanAmorelli/learning-go/pkg/config"
+	"github.com/YanAmorelli/learning-go/pkg/models"
 	"github.com/YanAmorelli/learning-go/pkg/render"
 ) 
 
@@ -23,9 +24,14 @@ func NewHandler(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.go.tmpl")
+	render.RenderTemplate(w, "home.page.go.tmpl", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.go.tmpl")
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello, again"
+
+	render.RenderTemplate(w, "about.page.go.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
