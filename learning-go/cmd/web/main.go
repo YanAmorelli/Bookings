@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
 	"github.com/YanAmorelli/learning-go/pkg/config"
 	"github.com/YanAmorelli/learning-go/pkg/handlers"
 	"github.com/YanAmorelli/learning-go/pkg/render"
@@ -30,9 +29,15 @@ func main() {
 	app.TemplateCache = templateCache
 	render.NewTemplates(&app)
 	
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
-
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
-	_ = http.ListenAndServe(portNumber, nil)
+	
+	serve := &http.Server {
+		Addr: portNumber,
+		Handler: routes(&app),
+	}
+
+	err = serve.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
