@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"github.com/YanAmorelli/learning-go/pkg/config"
-	"github.com/YanAmorelli/learning-go/pkg/models"
-	"github.com/YanAmorelli/learning-go/pkg/render"
+	"github.com/YanAmorelli/bookings/pkg/config"
+	"github.com/YanAmorelli/bookings/pkg/models"
+	"github.com/YanAmorelli/bookings/pkg/render"
 ) 
 
 var Repo *Repository
