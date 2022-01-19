@@ -55,7 +55,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *models.TemplateDat
 		
 		myCache := map[string]*template.Template{}
 		
-		pages, err := filepath.Glob("./templates/*.page.go.tmpl")
+		pages, err := filepath.Glob("./templates/*.page.tmpl")
 		if err != nil {
 			return myCache, err
 		}
@@ -68,13 +68,13 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *models.TemplateDat
 				return myCache, err
 			}
 			
-			matchLayout, err := filepath.Glob("./templates/*.layout.go.tmpl")
+			matchLayout, err := filepath.Glob("./templates/*.layout.tmpl")
 			if err != nil {
 				return myCache, err
 			}
 			
 			if len(matchLayout) > 0 {
-				templateSet, err = templateSet.ParseGlob("./templates/*.layout.go.tmpl")
+				templateSet, err = templateSet.ParseGlob("./templates/*.layout.tmpl")
 				if err != nil {
 					return myCache, err
 				}
