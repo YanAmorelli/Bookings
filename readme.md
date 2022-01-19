@@ -1,5 +1,4 @@
 # Bookings
----
 
 This repository is based on [Building Modern Web Applications with Go - Udemy course](https://www.udemy.com/course/building-modern-web-applications-with-go/). Here I'm learning the concepts of golang and creating some cool features, besides that, when I'm curious about something or whenever I have doubts I search some articles to better understand and put in [references.md](https://github.com/YanAmorelli/Bookings/blob/master/references.md). 
 
