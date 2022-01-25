@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/YanAmorelli/bookings/internal/config"
+	"github.com/YanAmorelli/bookings/internal/driver"
 	"github.com/YanAmorelli/bookings/internal/handlers"
 	"github.com/YanAmorelli/bookings/internal/helpers"
 	"github.com/YanAmorelli/bookings/internal/models"
@@ -23,42 +24,11 @@ var errorLog *log.Logger
 var infoLog *log.Logger
 
 func main() {
-	gob.Register(models.Reservation{})
-
-	// change this to true when is in production
-	app.InProduction = false
-
-	infoLog = log.New(os.Stdout, "Info: \t", log.Ldate|log.Ltime)
-	app.InfoLog = infoLog
-
-	errorLog = log.New(os.Stdout, "Error: \t", log.Ldate|log.Ltime|log.Lshortfile)
-	app.ErrorLog = errorLog
-
-
-
-	session = scs.New()
-	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = app.InProduction
-
-	app.Session = session
-
-	repo := handlers.NewRepo(&app)
-	handlers.NewHandler(repo)
-	helpers.NewHelpers(&app)
-	
-	// Setting environment to dev 
-	app.UseCache = false
-	
-	// Setting environment to production
-	// app.UseCache = true
-	templateCache, err := render.CreateTemplateCache()
+	db, err := run()
 	if err != nil {
-		log.Fatal("Cannot create template cache")
+		log.Fatal(err)
 	}
-	app.TemplateCache = templateCache
-	render.NewTemplates(&app)
+	defer db.SQL.Close()
 	
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
 	
@@ -71,4 +41,52 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func run() (*driver.DB, error) {
+	gob.Register(models.Reservation{})
+
+	// change this to true when in production
+	app.InProduction = false
+
+	infoLog = log.New(os.Stdout, "Info: \t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "Error: \t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
+
+	app.Session = session
+
+	log.Println("Connecting to database... ")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=postgres password=123456789")
+	if err != nil {
+		log.Fatal("Cannot connect to database! Dying... ")
+	}
+
+	log.Println("Connected to database!")
+	
+	// Setting environment to dev 
+	app.UseCache = false
+	
+	// Setting environment to production
+	// app.UseCache = true
+	templateCache, err := render.CreateTemplateCache()
+	if err != nil {
+		log.Fatal("Cannot create template cache")
+		return nil, err
+	}
+	app.TemplateCache = templateCache
+
+	repo := handlers.NewRepo(&app, db)
+	handlers.NewHandler(repo)
+	helpers.NewHelpers(&app)
+	render.NewTemplates(&app)
+
+	return db, nil
 }

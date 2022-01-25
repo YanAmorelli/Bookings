@@ -6,21 +6,26 @@ import (
 	"net/http"
 
 	"github.com/YanAmorelli/bookings/internal/config"
+	"github.com/YanAmorelli/bookings/internal/driver"
 	"github.com/YanAmorelli/bookings/internal/forms"
 	"github.com/YanAmorelli/bookings/internal/helpers"
 	"github.com/YanAmorelli/bookings/internal/models"
 	"github.com/YanAmorelli/bookings/internal/render"
+	"github.com/YanAmorelli/bookings/internal/repository"
+	"github.com/YanAmorelli/bookings/internal/repository/dbrepo"
 ) 
 
 var Repo *Repository
 
 type Repository struct {
 	App *config.AppConfig
+	DB repository.DatabaseRepo
 }
 
-func NewRepo(a *config.AppConfig) *Repository{
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository{
 	return &Repository{
 		App: a,
+		DB: dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
