@@ -88,9 +88,9 @@ func run() (*driver.DB, error) {
 	app.TemplateCache = templateCache
 
 	repo := handlers.NewRepo(&app, db)
-	handlers.NewHandler(repo)
+	handlers.NewHandlers(repo)
 	helpers.NewHelpers(&app)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 
 	return db, nil
 }
